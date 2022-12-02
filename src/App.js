@@ -11,7 +11,7 @@ export default function App() {
     <>
       <Routes>
         <Route path="/" element={<Layout />} exact={true}>
-          <Route index element={<Layout />} />
+          {/* <Route index element={<Layout />} /> */}
           <Route path="strava-redirect" element={<Strava />} />
           <Route path="dexcom-redirect" element={<DexCom />} />
           <Route path="*" element={<NoMatch />} />
@@ -35,6 +35,7 @@ function Layout() {
   return (
     <>
       <Outlet />
+
       <div className="bg-blue-gray-700 w-full h-screen p-5 flex flex-col ">
         <div className="relative grid place-items-center h-full ">
           <div className="-z-1 opacity-60 relative">

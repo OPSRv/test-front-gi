@@ -1,30 +1,36 @@
 import { Typography } from "@material-tailwind/react";
-
-// STRAVA
-import { cleanUpAuthToken, getUserData } from "../services/function";
-
-import { AuthGetter } from "../services/stravaAxios";
-
-import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { AuthDexCom } from "../services/axios";
+import { useEffect, useCallback } from "react";
+import { cleanUpAuthToken } from "../services/function";
 import {
   DEXCOM_CLIENT_ID,
   DEXCOM_CLIENT_SECRET,
-} from "../services/environmentVariables";
+  DEXCOM_REDIRECT_URI,
+} from "../services/variables";
+
 export function DexCom() {
-  useEffect(() => {
-    async function authenticate() {
-      const code = await cleanUpAuthToken(window.location.search, 0, 6);
-      const tokens = await AuthGetter(
-        code,
+  let location = useLocation();
+  console.log("location: ", location);
+
+  const fetchMyAPI = useCallback(async () => {
+    const code = await cleanUpAuthToken(location.search, 0, 6);
+    console.log("code: ", code);
+
+    if (code) {
+      await AuthDexCom(
         DEXCOM_CLIENT_ID,
         DEXCOM_CLIENT_SECRET,
-        "https://sandbox-api.dexcom.com/v2/oauth2/token",
-        "https://test-front-jn57ozn62-opsrv.vercel.app/dexcom-redirect"
-      );
-      console.log("🚀 ~ file: DexCom.js:23 ~ authenticate ~ tokens", tokens);
+        code,
+        DEXCOM_REDIRECT_URI
+      ).catch((e) => {
+        console.log(e, "e");
+      });
     }
+  }, [location]);
 
-    authenticate();
+  useEffect(() => {
+    fetchMyAPI();
   }, []);
 
   return (

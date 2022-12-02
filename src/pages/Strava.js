@@ -1,31 +1,29 @@
 import { Typography } from "@material-tailwind/react";
-
-// STRAVA
-import { cleanUpAuthToken, getUserData } from "../services/function";
-
-import { AuthGetter } from "../services/stravaAxios";
-
-import { useEffect } from "react";
-
-import {
-  STRAVA_CLIENT_ID,
-  STRAVA_CLIENT_SECRET,
-} from "../services/environmentVariables";
+import { useLocation } from "react-router-dom";
+import { AuthStrava } from "../services/axios";
+import { useEffect, useCallback } from "react";
+import { cleanUpAuthToken } from "../services/function";
+import { STRAVA_CLIENT_ID, STRAVA_CLIENT_SECRET } from "../services/variables";
 
 export function Strava() {
-  useEffect(() => {
-    async function authenticate() {
-      const code = await cleanUpAuthToken(window.location.search, 1, 5);
-      console.log("🚀 ~ file: strava.js:14 ~ authenticate ~ code", code);
-      const tokens = await AuthGetter(
+  let location = useLocation();
+
+  const fetchMyAPI = useCallback(async () => {
+    const code = await cleanUpAuthToken(location.search, 1, 5);
+    if (code) {
+      await AuthStrava(
         code,
         STRAVA_CLIENT_ID,
         STRAVA_CLIENT_SECRET,
         "https://www.strava.com/oauth/token"
-      );
+      ).catch((e) => {
+        console.log(e);
+      });
     }
+  }, [location]);
 
-    authenticate();
+  useEffect(() => {
+    fetchMyAPI();
   }, []);
 
   return (

@@ -7,10 +7,17 @@ import {
 import { ReactComponent as StravaIcon } from "../../assets/svg/github.svg";
 import { ReactComponent as DexComIcon } from "../../assets/svg/google.svg";
 import { ButtoneSocial } from "../ButtonFullWidth/ButtoneSocial";
+import { handleLoginStrava, handleLoginDexCom } from "../../services/function";
+
 import {
-  handleLoginStrava,
-  handleLoginDexCom,
-} from "../../services/environmentVariables";
+  STRAVA_CLIENT_ID,
+  STRAVA_REDIRECT_URI,
+  STRAVA_RESPONSE_TYPE,
+  STRAVA_APPROVAL_PROMPT,
+  STRAVA_SCOPE,
+  DEXCOM_CLIENT_ID,
+  DEXCOM_REDIRECT_URI,
+} from "../../services/variables";
 
 export const Auth = ({ children, question, converseTitle }) => {
   return (
@@ -18,12 +25,26 @@ export const Auth = ({ children, question, converseTitle }) => {
       <DialogBody className="flex flex-col gap-4">
         <CardBody className="flex flex-col gap-4">
           <div className="flex gap-4">
-            <div onClick={handleLoginStrava} className="w-[135px]">
+            <div
+              onClick={() =>
+                handleLoginStrava(
+                  STRAVA_CLIENT_ID,
+                  STRAVA_REDIRECT_URI,
+                  STRAVA_RESPONSE_TYPE,
+                  STRAVA_APPROVAL_PROMPT,
+                  STRAVA_SCOPE
+                )
+              }
+              className="w-[135px]"
+            >
               <ButtoneSocial title="Conect to Strava">
                 <StravaIcon />
               </ButtoneSocial>
             </div>
-            <div onClick={handleLoginDexCom} className="w-[135px]">
+            <div
+              onClick={handleLoginDexCom(DEXCOM_CLIENT_ID, DEXCOM_REDIRECT_URI)}
+              className="w-[135px]"
+            >
               <ButtoneSocial title="Conect to DexCom">
                 <DexComIcon />
               </ButtoneSocial>
